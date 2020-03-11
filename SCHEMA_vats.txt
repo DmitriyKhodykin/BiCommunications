@@ -9,5 +9,18 @@ user_departament         | varchar(64)
 user_number              | varchar(20)
 user_ext                 | varchar(20)
 =====================================================
-- 
+- call_history
+-----------------------------------------------------
+userId                   | varchar(20)
+callTime                 | datetime(4)
+callingNumber            | varchar(20)
+calledNumber             | varchar(20)
+duration                 | int
+direction                | varchar(20)
+status                   | varchar(20)
+answerDuration           | int
+terminationCause         | varchar(20)
+extTrackingId            | varchar(20)
+=====================================================
+-
 -----------------------------------------------------
