@@ -2,8 +2,8 @@
 # В случае, если вы захотите собрать код в бинарном формате и запустить
 # его на сервере, то помочь в этом может Pyinstaller.
 
-pip install pypiwin32
-pip install pyinstaller
+# pip install pypiwin32
+# pip install pyinstaller
 
 pyinstaller --onefile --icon=name.ico --noconsole myscript.py
 
