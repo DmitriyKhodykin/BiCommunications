@@ -22,5 +22,9 @@ answerDuration           | int
 terminationCause         | varchar(20)
 extTrackingId            | varchar(20)
 =====================================================
--
+- client_number
 -----------------------------------------------------
+entry_date               | datetime(4)
+fio                      | varchar(20)
+client                   | varchar(20)
+client_tel               | varchar(20)
