@@ -25,4 +25,4 @@
 
 Результат работы над проектом - система интерактивных отчетов, например:
 
-![PBI](https://powerbicdn.azureedge.net/mediahandler/blog/legacymedia/4645.dashboard2.png)
+![PBI](https://gcits.com/wp-content/uploads/PowerBIDashboardPhoneCalls.png)
