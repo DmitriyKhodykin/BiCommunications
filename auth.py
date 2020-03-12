@@ -8,3 +8,8 @@ host_vats = "****"
 user_vats = "****"
 passwd_vats = "****"
 db_vats = "vats"
+
+# Ресурс для авторизации в SOAP / web-сервисе
+wsdl = 'http://servicesite.ru/service.1cws?wsdl'
+user_soap = "user"
+password_soap = "passwd"
