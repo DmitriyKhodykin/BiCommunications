@@ -25,36 +25,16 @@ import requests
 import MySQLdb  # Локальная база данных - MySQL
 import json
 import datetime
-import time
 import get_db_maxdatetime as mdt
-
-# Ресурс и данные для авторизации
-token = '****'
-url_abonents = 'https://vpbx.mts.ru/api/abonents'
-url_callHistory = 'https://vpbx.mts.ru/api/callHistory'
-
-
-def abonetns_dict():
-    """Возвращает справочник абонентов ВАТС МЖД в структуре:
-    [{'serviceProviderId': 8888888888, 'groupId': 8888888888, 'userId': 8888888888,
-    'firstName': 'Анна Ивановна', 'lastname': 'Иванова ', 'phoneNumber': '8888888888',
-    'extension': '172', 'callingLineIdPhoneNumber': '8888888888', 'department':
-    'Наименование', 'email': ''}...]"""
-    
-    payload_abonents = {
-        'X-AUTH-TOKEN': token,
-        'cache-control': 'no-cache'
-    }
-    r_abonents = requests.get(url_abonents, params=payload_abonents).text
-    abonents_dict = json.loads(r_abonents)
-    return abonents_dict
+import get_abonents_dict as gad
+import auth
 
 
 def get_user_id():
     """Возвращает перечень Id абонентов ВАТС МТС"""
-    
+
     user_ids = []  # Список Id абонентов ВАТС
-    for abonent in abonetns_dict():
+    for abonent in gad.abonetns_dict():
         user_ids.append(abonent['userId'])
     return user_ids
 
@@ -73,7 +53,7 @@ def call_history(uid, date_from, date_to):
     headers = {
         'Content-Type': 'application/json',
         'cache-control': 'no-cache',
-        'X-AUTH-TOKEN': token
+        'X-AUTH-TOKEN': auth.token
     }
 
     response = requests.request("GET", url_callHistory, headers=headers, data=payload)
@@ -89,7 +69,10 @@ unix_from = int(mdt.get_db_maxdatetime()[0] + 1)
 def insert_vats_db():
     """Обновляет историю вызовов сотрудников в ВАТС МТС в локальной базе"""
     
-    db_vats = MySQLdb.connect(host="****", user="****", passwd="****", db="****", charset='utf8')
+    db_vats = MySQLdb.connect(
+        host=auth.host_vats, user=auth.user_vats,
+        passwd=auth.passwd_vats, db=auth.db_vats, charset='utf8'
+    )
     
     # Использование метода cursor() для получения объекта для работы с базой
     cursor = db_vats.cursor()
