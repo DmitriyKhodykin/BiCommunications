@@ -20,13 +20,14 @@ import MySQLdb  # pip install mysqlclient
 from datetime import date
 import ast
 import re
+import auth
 
 
 def get_soap_client_number():
     """Возвращает справочник контактов клиентов из SOAP-сервиса"""
-    wsdl = 'http://servicesite.ru/base/ws/service.1cws?wsdl'
-    user = "****"
-    password = "****"
+    wsdl = auth.wsdl
+    user = auth.user_soap
+    password = auth.password_soap
 
     settings = Settings(
         strict=True
@@ -55,7 +56,10 @@ def get_soap_client_number():
 
 def insert_vats_db():
     """Обновляет базу данных номеров клиентов (SCHEMA "vats") """
-    db_vats = MySQLdb.connect(host="****", user="****", passwd="****", db="vats", charset='utf8')
+    db_vats = MySQLdb.connect(
+        host=auth.host_vats, user=auth.user_vats,
+        passwd=auth.passwd_vats, db=auth.db_vats, charset='utf8'
+    )
     
     # Используя метод cursor() получаем объект для работы с базой
     cursor = db_vats.cursor()
