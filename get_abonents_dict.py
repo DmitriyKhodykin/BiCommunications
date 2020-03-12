@@ -9,11 +9,7 @@ import json
 import time
 from datetime import date
 import MySQLdb  # pip install mysqlclient
-
-
-# Ресурс и данные для авторизации
-token = '****'
-url_abonents = 'https://vpbx.mts.ru/api/abonents'
+import auth
 
 
 def abonetns_dict():
@@ -24,7 +20,7 @@ def abonetns_dict():
     'Наименование', 'email': ''}...]"""
     
     payload_abonents = {
-        'X-AUTH-TOKEN': token,
+        'X-AUTH-TOKEN': auth.token,
         'cache-control': 'no-cache'
     }
     r_abonents = requests.get(url_abonents, params=payload_abonents).text
@@ -37,12 +33,14 @@ def abonetns_dict():
 def insert_vats_db():
     """Обновляет базу данных номеров мобильных телефонов абонентов"""
     
-    db_vats = MySQLdb.connect(host="****", user="****", passwd="****", db="vats", charset='utf8')
+    db_vats = MySQLdb.connect(
+        host=auth.host_vats, user=auth.user_vats, 
+        passwd=auth.passwd_vats, db=auth.db_vats, charset='utf8'
+    )
     # Используя метод cursor() получаем объект для работы с базой
     cursor = db_vats.cursor()
     
     # Исполняем SQL-запрос в цикле
-    
     for i in abonetns_dict():
         # Определяем переменные и их значения
         entry_date = date.today()  # Дата сохранения списка в "vats"
