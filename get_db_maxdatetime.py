@@ -5,6 +5,7 @@
 import MySQLdb  # pip install mysqlclient
 import time
 import datetime
+import auth
 
 
 def convert_ut_to_dt(ut):
@@ -20,7 +21,8 @@ def get_db_maxdatetime():
     которая хранится в локальной базе данных (SCHEMA "vats")"""
     
     db_vats = MySQLdb.connect(
-        host="****", user="****", passwd="****", db="vats", charset='utf8'
+        host=auth.host_vats, user=auth.user_vats,
+        passwd=auth.passwd_vats, db=auth.db_vats, charset='utf8'
     )
     
     # Используя метод cursor() получаем объект для работы с базой
