@@ -13,6 +13,8 @@ Within the framework of the project, a number of modules in the Python programmi
 
 into a single local database - for subsequent operational analysis on the MS Power BI platform https://powerbi.microsoft.com/ru-ru/
 
+![PIPELINE](C:\Users\d.hodykin\Documents\01_МЖД_ЦИФРОВАЯ ТРАНСФОРМАЦИЯ\04_Проекты\01_Колл центр\04_Рабочие материалы\Отчет Power BI\REP_pipeline.png)
+
 The repository contains the following blocks of program code:
 - auth.py - resource for authorization for various services / databases
 - get_abonents_dict.py - module for uploading a list of subscribers of a VATE to the local database (see SCHEMA_vats.txt)
