@@ -1,28 +1,27 @@
 # BI-communications
-## Проект построения BI-аналитики коммуникационной активности сотрудников организации: MTS VATS + MySQL + Power BI
+## Designing BI analytics of the communication activity of the organization’s employees: MTS VATS + MySQL + Power BI
 
-<b>Цель проекта</b> - построение BI-аналитики коммуникационной активности сотрудников коммерческой организациии для:
-- предупреждения спада активности по ключевым клиентам
-- эффективного распределения клиентской базы среди сотрудников
-- анализа структуры активности сотрудников во внутренней / внешней среде
-- и др.
+<b>TARGET</b> - building BI-analytics of communication activity of employees of a commercial organization for:
+- prevention of decline in activity by key customers
+- effective distribution of customer base among employees
+- analysis of the structure of employee activity in the internal / external social environment
+- etc.
 
-В рамках проекта разработан ряд модулей на языке программирования Python, способных осуществлять сбор, предварительную обработку и
-сохранение информации из различных источников, таких как:
-- web-сервисы организации
-- виртуальная АТС от МТС (ВАТС)
+Within the framework of the project, a number of modules in the Python programming language have been developed that are able to collect, pre-process and store information from various sources, such as:
+- organization web services
+- virtual аutomatic telephone exchange (VATE) from MTS (russian mobile provider)
 
-в единую локальную базу данных - для последующего оперативного анализа на платформе MS Power BI https://powerbi.microsoft.com/ru-ru/
+into a single local database - for subsequent operational analysis on the MS Power BI platform https://powerbi.microsoft.com/ru-ru/
 
-Репозиторий содержит следующие блоки программного кода:
-- auth.py - ресурс для авторизации для различных сервисов / баз данных
-- get_abonents_dict.py - модуль выгрузки списка абенентов виртуальной АТС (ВАТС) от МТС в локальную базу данных (см. SCHEMA_vats.txt).
-- get_callHistory.py - модуль для "перегрузки" истории вызовов из ВАТС в локальную базу данных с заданной частотой.
-- get_db_maxdatetime.py - вспомогательный модуль, возвращающий максимальную дату-время, которая хранится в истории вызовов SCHEMA "vats".
-- get_clients_numbers.py - модуль, демонстрирующий работу с SOAP-сервисом, поставляющим данные из учетной ERP-системы, например, 1С. Различные версии 1С все-еще являются популярными поставщиками данных в организациях, в том числе через SOAP-сервисы, возвращающие  в ответ на запрос структурированный XML-файл. Несмотря на то, что структура выдачи в каждом отдельно взятом случае будет различной,  рассмотрим алгоритм работы с SOAP-сервисом, т.к. информации в открытых источниках по данной теме - не много.
-- compilation_modules.py - инструкция по компиляции кода (при необходимости).
-- test_call_history.py - тестирование работы функционала модулей выгрузки истории вызовов.
+The repository contains the following blocks of program code:
+- auth.py - resource for authorization for various services / databases
+- get_abonents_dict.py - module for uploading a list of subscribers of a VATE to the local database (see SCHEMA_vats.txt)
+- get_callHistory.py - module for loading call history from the VATE to the local database with a given frequency
+- get_db_maxdatetime.py - a helper module that returns the maximum date-time, which is stored in the SCHEMA "vats"
+- get_clients_numbers.py - a module that demonstrates work with a SOAP service that delivers data from an accounting ERP system 
+- compilation_modules.py - instructions for compiling code (if necessary)
+- test_call_history.py - testing the functionality of the call history upload modules
 
-Результат работы над проектом - система интерактивных отчетов, например:
+The result of the project is an interactive reporting system, for example:
 
 ![PBI](https://gcits.com/wp-content/uploads/PowerBIDashboardPhoneCalls.png)
