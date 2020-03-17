@@ -13,7 +13,7 @@ Within the framework of the project, a number of modules in the Python programmi
 
 into a single local database - for subsequent operational analysis on the MS Power BI platform https://powerbi.microsoft.com/ru-ru/
 
-![PIPELINE](C:\Users\d.hodykin\Documents\01_МЖД_ЦИФРОВАЯ ТРАНСФОРМАЦИЯ\04_Проекты\01_Колл центр\04_Рабочие материалы\Отчет Power BI\REP_pipeline.png)
+![PIPELINE](https://downloader.disk.yandex.ru/preview/04ae3ff657d47a5c0a49b28f964f28bd83457d02d1b8f11c54553e2bdbb69854/5e715499/JFsqCvxIsN3HRKAMTNXce63rvt4OiXCrUtMBJEWaHz8Up6P6rUti2VtsEJjTMyj5lN3EP5ffj6N4f1ISgTec5Q==?uid=0&filename=REP_pipeline.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&tknv=v2&owner_uid=181432056&size=2048x2048)
 
 The repository contains the following blocks of program code:
 - auth.py - resource for authorization for various services / databases
