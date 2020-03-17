@@ -1,6 +1,5 @@
-# Модуль выгрузки списка абенентов
-# виртуальной АТС (ВАТС) в локальную базу данных
-# для постоянного хранения и аналитики изменений
+# Module for loading a list of VATE subscribers to a local database
+# for permanent storage and change analysis
 # python >= 3.7. PEP8
 
 
@@ -13,7 +12,7 @@ import auth
 
 
 def abonetns_dict():
-    """Возвращает справочник абонентов ВАТС в формате:
+    """Returns the dict of subscribers in the format:
     [{'serviceProviderId': 8888888888, 'groupId': 8888888888, 'userId': 8888888888,
     'firstName': 'Анна Ивановна', 'lastname': 'Иванова ', 'phoneNumber': '8888888888',
     'extension': '172', 'callingLineIdPhoneNumber': '8888888888', 'department':
@@ -29,31 +28,31 @@ def abonetns_dict():
     return abonents_dict
 
 
-# Код для работы с базой данных MySQL на стороне клиента ВАТС (SCHEMA "vats")
+# Code for working with MySQL database on the VATE client side (SCHEMA "vats")
 def insert_vats_db():
-    """Обновляет базу данных номеров мобильных телефонов абонентов"""
+    """Updates the database of mobile phone numbers of subscribers"""
     
     db_vats = MySQLdb.connect(
         host=auth.host_vats, user=auth.user_vats, 
         passwd=auth.passwd_vats, db=auth.db_vats, charset='utf8'
     )
-    # Используя метод cursor() получаем объект для работы с базой
+    # Using the cursor () method, we get an object for working with the database
     cursor = db_vats.cursor()
     
-    # Исполняем SQL-запрос в цикле
+    # Execute the SQL query in a loop
     for i in abonetns_dict():
-        # Определяем переменные и их значения
-        entry_date = date.today()  # Дата сохранения списка в "vats"
+        # Define variables and their values
+        entry_date = date.today()  # Date the list was saved in "vats"
         user_id = i['userId']
         user_name = i['firstName']
-        user_departament = i['lastname']  # Стандартное поле департамента отсутсвует в API
+        user_departament = i['lastname']
         user_number = i['phoneNumber']
         user_ext = i['extension']
 
-        # Задаем переменные, значения которых будут добавлены к таблице MySQL
+        # Set the variables whose values will be added to the MySQL table
         values = (entry_date, user_id, user_name, user_departament, user_number, user_ext)
         
-        # Формируем запрос SQL к таблице базы данных со ссылкой на переменные
+        # Form the SQL query to the database table with reference to the variables
         cursor.execute("""
             INSERT INTO 
             vats_abonents (entry_date, user_id, user_name, user_departament, user_number, user_ext)
@@ -61,12 +60,12 @@ def insert_vats_db():
                 (%s, %s, %s, %s, %s, %s)
         """, values)
 
-    # Применяем изменения к базе данных
+    # Apply changes to the database
     db_vats.commit()
     db_vats.close()
 
 
 while True:
     insert_vats_db()
-    time.sleep(86600)  # Раз в сутки обновляем справочник абонентов
+    time.sleep(86600)  # Once a day we update the dict of subscribers
     
