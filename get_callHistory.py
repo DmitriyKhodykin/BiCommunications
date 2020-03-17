@@ -1,28 +1,27 @@
-# Поскольку история вызовов на сервере МТС хранится 3 мес,
-# то необходимо периодически перегружать информацию из ВАТС
-# в локальную базу данных (находящуюся на стороне пользователя ВАТС)
+# The call history on the server is stored for 3 months, 
+# it is necessary to periodically reload information from the VATE to the local database
 
-# Параметры GET-запроса к серверу https://vpbx.mts.ru
+# GET request parameters to the server https://vpbx.mts.ru
 # История вызовов:
-# "abonentId" - идентификатор абонента для которого выгружается история вызовов (обязательный параметр)
-# "callDirection" - направление вызова, может принимать значения:
-#     = "ORIGINATING" - исходящий звонок
-#     = "TERMINATING" - входящий звонок
-#     = null - фильтр отсутствует
-# "callStatus" - статус вызова, может принимать значения:
-#     = "PLACED" - состоявшийся звонок
-#     = "MISSED" - пропущенный звонок
-#     = null - фильтр отсутствует
-# "calledNumber" - исходящий номер, null - фильтр отсутствует
-# "callingNumber" - входящий номер, null - фильтр отсутствует
-# "dateFrom" - начальная дата фильтрации, в формате unixtimestamp
-# "dateTo" - конечная дата фильтрации, в формате unixtimestamp
-# Даты могут быть null, в таком случае возвращается история вызовов за последние сутки
+# "abonentId" - Caller ID for which the call history is uploaded (required)
+# "callDirection" - call direction, may take the following values:
+#     = "ORIGINATING" - outgoing call
+#     = "TERMINATING" - incoming call
+#     = null - no filter
+# "callStatus" - call status, may take the following values:
+#     = "PLACED" - held call
+#     = "MISSED" - missed call
+#     = null - no filter
+# "calledNumber" - outgoing number, null - no filter
+# "callingNumber" - incoming number, null - no filter
+# "dateFrom" - start date of filtering, in the format unixtimestamp
+# "dateTo" - end date of filtering, in the format unixtimestamp
+# Dates can be null, in this case the call history for the last day is returned
 
 # Python >= 3.7. PEP8
 
 import requests
-import MySQLdb  # Локальная база данных - MySQL
+import MySQLdb  # Local database - MySQL
 import json
 import datetime
 import get_db_maxdatetime as mdt
@@ -31,7 +30,7 @@ import auth
 
 
 def get_user_id():
-    """Возвращает перечень Id абонентов ВАТС МТС"""
+    """Returns the Id list of VATE users"""
 
     user_ids = []  # Список Id абонентов ВАТС
     for abonent in gad.abonetns_dict():
@@ -40,7 +39,7 @@ def get_user_id():
 
 
 def call_history(uid, date_from, date_to):
-    """Возвращает историю вызовов в разрезе абонентов ВАТС МТС"""
+    """Returns the history of calls"""
 
     payload = f'''{{"abonentId": {uid}, 
                     "callDirection": null, 
@@ -60,30 +59,28 @@ def call_history(uid, date_from, date_to):
     return json.loads(response.text.encode('utf8'))
 
 
-# Установка даты-времени начала периода выгрузки истории вызовов
-# максимальное время вызова, уже содержащееся в локальной базе данных
-# + 1 секунда в формате UnixTime
+# Setting the date-time of the start of the call history upload period
 unix_from = int(mdt.get_db_maxdatetime()[0] + 1)
 
 
 def insert_vats_db():
-    """Обновляет историю вызовов сотрудников в ВАТС МТС в локальной базе"""
+    """Updates the call history of employees in the local database"""
     
     db_vats = MySQLdb.connect(
         host=auth.host_vats, user=auth.user_vats,
         passwd=auth.passwd_vats, db=auth.db_vats, charset='utf8'
     )
     
-    # Использование метода cursor() для получения объекта для работы с базой
+    # Using the cursor () method to get an object for working with the database
     cursor = db_vats.cursor()
     
-    # Использование SQL-запроса в цикле
+    # Using SQL query in a loop
     for idi in get_user_id():
-        result = call_history(idi, f'{unix_from}000', 'null')  # API ВАТС требует 13-ти значного формата unixTime
+        result = call_history(idi, f'{unix_from}000', 'null')  # 13 digit UnixTime
         for i in result:
-            user_id = i['userId'][:10]  # Приведение в соотв. с номером абонента ВАТС (без +7)
+            user_id = i['userId'][:10]
             call_time = datetime.datetime.fromtimestamp(
-                int(str(i['callTime'])[:10])  # Выделение 10-ти значного кода unixTime для конвертации в datetime
+                int(str(i['callTime'])[:10])
             ).strftime('%Y-%m-%d %H:%M:%S')
             calling_number = i['callingNumber'][1:]
             called_number = i['calledNumber'][1:]
@@ -94,12 +91,12 @@ def insert_vats_db():
             termination_cause = i['terminationCause']
             ext_tracking_id = i['extTrackingId']
 
-            # Определение переменных, значения которых будут добавлены к таблице MySQL
+            # Defining variables whose values will be added to the MySQL table
             values = (
                 user_id, call_time, calling_number, called_number, duration, direction, status, answer_duration,
                 termination_cause, ext_tracking_id
             )
-            # Формирование запроса SQL к таблице базы данных со ссылкой на переменные
+            # Generating a SQL query on a database table with reference to variables
             cursor.execute("""
                 INSERT INTO
                 call_history (userId, callTime, callingNumber, calledNumber, duration, direction, status, 
@@ -108,12 +105,12 @@ def insert_vats_db():
                     (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, values)
 
-    # Применение изменений к базе данных
+    # Apply changes to the database
     db_vats.commit()
     db_vats.close()
 
 
-while True:  # Дополнение истории вызовов каждые 3 часа в локальной базе
+while True:  # Addition of call history every 3 hours in the local database
     insert_vats_db()
     time.sleep(10800)
     
