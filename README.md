@@ -1,7 +1,7 @@
 # BI-communications
 ## Designing BI analytics of the communication activity of the organization’s employees: MTS VATE + MySQL + Power BI
 
-<b>TARGET</b> - building BI-analytics of communication activity of employees of a commercial organization for:
+<b>TARGET</b> - building BI-analytics of communication activity employees of a commercial organization for:
 - prevention of decline in activity by key customers
 - effective distribution of customer base among employees
 - analysis of the structure of employee activity in the internal / external social environment
